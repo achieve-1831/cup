@@ -9,6 +9,13 @@
 #include <string.h>
 #include "hashtable.h"
 
+/*
+  function insert_list inserts an element in a list 
+  return the pointer to the beginning of the list
+  look for an item by key in the list
+  if the element is found then update the value
+  if not found then add to the end of the list
+*/
 struct Element* insert_list(struct Element* head, char* key, int value, bool *res) {
     *res = false;
     if (head == NULL) {
@@ -39,7 +46,6 @@ struct Element* insert_list(struct Element* head, char* key, int value, bool *re
     }
     return head;
 }
-
 int find_list(struct Element* head, char* key) {
     struct Element* it = head;
     while (it != NULL && strcmp(it->key, key) != 0) {
@@ -50,6 +56,11 @@ int find_list(struct Element* head, char* key) {
     } else return -1;
 }
 
+/*
+  function removes an element of the list 
+  if our key is head, free memory of it, remove its value
+  if our key is something else then iterate next element
+*/
 struct Element* remove_list(struct Element* head, char* key) {
     struct Element* tmp;
     if (head == NULL) {
@@ -73,6 +84,9 @@ struct Element* remove_list(struct Element* head, char* key) {
     return head;
 }
 
+/*
+  function create_table initializes a hashtable
+*/
 struct HashTable* create_table(int n) {
     struct HashTable* h = (struct HashTable*) malloc(sizeof(struct HashTable));
     h->table = (struct Element**) malloc(n * sizeof(struct Element*));
@@ -82,6 +96,9 @@ struct HashTable* create_table(int n) {
     h->n = n;
 }
 
+/*
+  polinomial function for strings
+*/
 int hash(char* key, int n) {
     int result = 0;
     int p = 7;
@@ -91,11 +108,19 @@ int hash(char* key, int n) {
     return result;
 }
 
+/*
+  function insert_ht implements insertion in the hashtable
+*/
 void insert_ht(struct HashTable* h, char* key, int value, bool *res) {
     int index = hash(key, h->n);
     h->table[index] = insert_list(h->table[index], key, value, res);
 }
 
+
+/*
+  function find_ht finds an element by key
+  returns value
+*/
 int find_ht(struct HashTable* h, char* key) {
     return find_list(h->table[hash(key, h->n)], key);
 }
